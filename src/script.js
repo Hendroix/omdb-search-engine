@@ -136,7 +136,7 @@ function generateCardBasedOnData(data) {
     posterDIV.className = 'poster';
     if (data.Poster != 'N/A' && data.Poster != undefined) {
         let img = document.createElement('img');
-        img.setAttribute('src', item.Poster != 'N/A' ? item.Poster : PLACEHOLDER_COVER_URL);
+        img.setAttribute('src', data.Poster != 'N/A' ? data.Poster : PLACEHOLDER_COVER_URL);
         posterDIV.appendChild(img);
     }
     posterDIV.appendChild(generateRaitings(data.Ratings));
