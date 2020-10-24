@@ -68,7 +68,7 @@ header div:first-of-type{
 
  #searchDiv {
      display: flex;
-     overflow-x: scroll;
+     overflow-x: auto;
      width: 98%;
      margin: auto;
      margin-top: 0.75rem;
