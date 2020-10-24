@@ -1,9 +1,24 @@
-//THESE SHOULD BE STORED LOCALY IN A RESOURCES/ FOLDER TO NOT USE THESE AS CDNs.
-const IMDB_ICON_URL = 'https://ia.media-imdb.com/images/M/MV5BMTczNjM0NDY0Ml5BMl5BcG5nXkFtZTgwMTk1MzQ2OTE@._V1_.png';
-const ROTTEN_TOMATOES_ICON_URL = 'https://www.clipartmax.com/png/full/206-2067887_rotten-tomatoes-logo-rotten-tomatoes-logo-png.png';
-const METACRITIC_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Metacritic_M.png';
+const IMDB_ICON_URL = './resources/imdb.png';
+const ROTTEN_TOMATOES_ICON_URL = './resources/rottentomatoes.png';
+const METACRITIC_ICON_URL = './resources/metacritic.png';
+const PLACEHOLDER_COVER_URL = './resources/placeholder.png';
 const VALID_KEYS = ['Plot', 'Actors', 'Awards', 'Runtime', 'Director', 'Genre', 'Released', 'Rated', 'Language'];
-const APIKEY = 'ENTER_YOUR_API_KEY_HERE';
+var APIKEY = '';
+
+window.onload = () => {
+    let apiKey = window.localStorage.getItem('OMDBAPIKEY');
+    if (apiKey != undefined || apiKey != null) {
+        APIKEY = apiKey;
+    } else {
+        askForKey();
+    }
+}
+
+function askForKey() {
+    let apiKeyGiven = prompt('Provide you API key');
+    APIKEY = apiKeyGiven;
+    window.localStorage.setItem('OMDBAPIKEY', APIKEY);
+}
 
 function searchOMDBAPI() {
     event.preventDefault();
@@ -15,12 +30,15 @@ function searchOMDBAPI() {
         let URI = `http://www.omdbapi.com/?apikey=${APIKEY}&type=movie&s=${searchWord}`;
         fetch(URI)
             .then(response => {
-                response.json().then(data => {
-                    console.log(data);
-                    if (data.Response === 'True') {
-                        showSearchResults(data.Search);
-                    }
-                });
+                if (response.ok === true) {
+                    response.json().then(data => {
+                        if (data.Response === 'True') {
+                            showSearchResults(data.Search);
+                        }
+                    });
+                } else if (response.status === 401) {
+                    askForKey();
+                }
             })
             .catch(error => console.error(error));
     }
@@ -30,11 +48,14 @@ function getIMDBIDResults(imdbID) {
     let URI = `http://www.omdbapi.com/?apikey=${APIKEY}&type=movie&i=${imdbID}`;
     fetch(URI)
         .then(response => {
-            response.json().then(data => {
-                console.log(data);
-                let resultsDIV = document.getElementById('results');
-                resultsDIV.prepend(generateCardBasedOnData(data));
-            });
+            if (response.ok === true) {
+                response.json().then(data => {
+                    let resultsDIV = document.getElementById('results');
+                    resultsDIV.prepend(generateCardBasedOnData(data));
+                });
+            } else if (response.status === 401) {
+                askForKey();
+            }
         })
         .catch(error => console.error(error));
 }
@@ -56,9 +77,10 @@ function showSearchResults(search) {
         searchDIV.appendChild(selectButton);
 
         let img = document.createElement('IMG');
-        img.setAttribute('src', item.Poster);
         img.style.height = '250px';
         img.style.width = '175px';
+        img.setAttribute('src', item.Poster != 'N/A' ? item.Poster : PLACEHOLDER_COVER_URL);
+
         posterContainer.appendChild(img);
 
         let title = document.createElement('h3');
@@ -114,7 +136,7 @@ function generateCardBasedOnData(data) {
     posterDIV.className = 'poster';
     if (data.Poster != 'N/A' && data.Poster != undefined) {
         let img = document.createElement('img');
-        img.setAttribute('src', data.Poster);
+        img.setAttribute('src', item.Poster != 'N/A' ? item.Poster : PLACEHOLDER_COVER_URL);
         posterDIV.appendChild(img);
     }
     posterDIV.appendChild(generateRaitings(data.Ratings));
