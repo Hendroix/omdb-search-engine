@@ -1,8 +1,9 @@
+//THESE SHOULD BE STORED LOCALY IN A RESOURCES/ FOLDER TO NOT USE THESE AS CDNs.
 const IMDB_ICON_URL = 'https://ia.media-imdb.com/images/M/MV5BMTczNjM0NDY0Ml5BMl5BcG5nXkFtZTgwMTk1MzQ2OTE@._V1_.png';
 const ROTTEN_TOMATOES_ICON_URL = 'https://www.clipartmax.com/png/full/206-2067887_rotten-tomatoes-logo-rotten-tomatoes-logo-png.png';
 const METACRITIC_ICON_URL = 'https://upload.wikimedia.org/wikipedia/commons/f/f2/Metacritic_M.png';
 const VALID_KEYS = ['Plot', 'Actors', 'Awards', 'Runtime', 'Director', 'Genre', 'Released', 'Rated', 'Language'];
-const APIKEY = '14aa26ee';
+const APIKEY = 'ENTER_YOUR_API_KEY_HERE';
 
 function searchOMDBAPI() {
     event.preventDefault();
